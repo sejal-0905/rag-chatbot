@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RAG Chatbot</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <button class="new-chat-btn" id="newChatBtn"><i class="ti ti-plus"></i> New chat</button>
+  </div>
+  <div class="sidebar-section-label">Recent</div>
+  <div class="chat-list" id="chatList"></div>
+</div>
+
+<div class="main" id="main">
+  <header>
+    <button class="toggle-sidebar-btn" id="toggleSidebar"><i class="ti ti-layout-sidebar"></i></button>
+    <div class="header-title">RAG Chatbot</div>
+    <div class="header-actions">
+      <button class="hdr-btn" id="docsBtn"><i class="ti ti-files"></i> Documents</button>
+      <button class="hdr-btn clear-btn" id="clearBtn">clear chat</button>
+      <span class="header-model">model: <span>llama-3.3-70b</span></span>
+    </div>
+  </header>
+
+  <div class="docs-overlay" id="docsOverlay">
+    <div class="docs-overlay-label">Documents</div>
+    <label class="upload-label">
+      <i class="ti ti-upload"></i>
+      <div class="u-text">click to upload files</div>
+      <input type="file" id="fileInput" accept=".pdf,.txt" multiple />
+    </label>
+    <div class="status-msg" id="statusMsg"></div>
+    <div id="loadingSpinner" class="spinner" style="display:none">
+      <div class="spinner-dots"><span></span><span></span><span></span></div> loading...
+    </div>
+    <div class="file-list" id="fileList"></div>
+  </div>
+
+  <div class="debug-panel" id="debugPanel">
+    <div class="debug-panel-header">
+      <span class="debug-panel-title"><i class="ti ti-radar-2" style="font-size:13px;margin-right:5px"></i>Retrieval Debug</span>
+      <span class="debug-panel-subtitle" id="debugPanelSubtitle"></span>
+      <button class="debug-close-btn" id="debugCloseBtn"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="debug-body" id="debugBody">
+      <div class="debug-empty">
+        <i class="ti ti-radar-2"></i>
+        ask a question to see<br>retrieved chunks here
+      </div>
+    </div>
+  </div>
+
+  <div class="drag-overlay" id="dragOverlay">
+    <i class="ti ti-file-upload"></i>
+    <p>drop to upload</p>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="input-wrap" id="inputWrap">
+    <div class="input-box">
+      <input type="text" id="questionInput" placeholder="ask something about your documents..." />
+      <button id="askBtn">Ask</button>
+    </div>
+    <div class="input-hint">enter to send</div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
