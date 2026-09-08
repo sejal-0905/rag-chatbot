@@ -1,0 +1,17 @@
+# Environment variables — never commit your API keys
+.env
+
+# Virtual environment
+venv/
+
+# ChromaDB data — too large, regenerated on use
+chroma_db/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+.DS_Store
+Thumbs.db
