@@ -1,123 +1,196 @@
-# DocuMind — Intelligent Document-Grounded RAG Chatbot
+# 🧠 DocuMind — Intelligent Document-Grounded RAG Chatbot
 
-A full-stack RAG (Retrieval-Augmented Generation) chatbot that answers questions from uploaded documents, with conditional web search fallback and a built-in study companion.
+An intelligent, full-stack Retrieval-Augmented Generation (RAG) chatbot that answers questions using uploaded documents, with conditional web search fallback and an integrated AI-powered study companion.
 
-Built during an AI/ML internship at Synergech Technologies.
-
----
-
-## Features
-
-- **Two-stage retrieval** — vector search via ChromaDB followed by cross-encoder reranking for relevance-ranked results
-- **Conditional web search** — Tavily only triggers when document relevance scores fall below threshold, not on every query
-- **Multi-layer guardrails** — regex fast filter + LLM safety classifier (`gpt-oss-safeguard-20b`) blocking crisis content, hate speech, violence, illegal requests, and off-topic chat; output-level classification after generation
-- **Study companion** — generates notes, flashcards, and quizzes from retrieved document chunks
-- **Source confidence bars** — score-shifted reranker values visualised per source with web search attribution
-- **Retrieval debug panel** — live view of retrieved chunks, reranker scores, and search query used
-- **Streaming responses** — token-by-token SSE streaming with phased loading indicator
-- **Multi-chat** — persistent chat history via localStorage with rename and delete
-- **Drag and drop upload** — PDF, DOCX, TXT, MD supported with live progress streaming
-- **Query rewriting** — generates 2 alternative phrasings per query for better recall
-- **Pronoun resolution** — detects follow-up references ("it", "this", "they") and prepends conversation context
+Built during an **AI/ML Internship at Synergech Technologies**.
 
 ---
 
-## Stack
+## ✨ Features
+
+- **📚 Two-Stage Retrieval:** Combines semantic vector search using ChromaDB with cross-encoder reranking to retrieve the most relevant document passages.
+- **🌐 Conditional Web Search:** Integrates Tavily search as a fallback when document relevance scores do not meet the defined threshold.
+- **🛡️ Multi-Layer AI Guardrails:** Uses regex-based filtering and an LLM safety classifier (`openai/gpt-oss-safeguard-20b`) to detect crisis-related content, hate speech, violence, illegal requests, and off-topic queries, with additional output-level safety checks.
+- **🎓 AI Study Companion:** Generates study notes, flashcards, and multiple-choice quizzes from retrieved document content using GPT-OSS-120B.
+- **📊 Source Confidence Visualization:** Displays score-based relevance indicators for retrieved sources, with web search attribution.
+- **🔍 Retrieval Debug Panel:** Provides visibility into retrieved document chunks, reranker scores, and search queries.
+- **⚡ Streaming Responses:** Delivers token-by-token responses using Server-Sent Events (SSE).
+- **💬 Multi-Chat Support:** Maintains persistent conversation history using browser localStorage, with options to rename and delete chats.
+- **📂 Drag-and-Drop Document Upload:** Supports PDF, DOCX, TXT, and Markdown files with live processing progress.
+- **🔄 Query Rewriting:** Generates two alternative query formulations to improve retrieval coverage and relevance.
+- **🧩 Context-Aware Follow-ups:** Resolves pronoun references such as "it", "this", and "they" using previous conversation context.
+
+---
+
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Backend | FastAPI, Python |
-| Vector DB | ChromaDB (cosine similarity) |
+| Backend | Python, FastAPI |
+| Vector Database | ChromaDB (Cosine Similarity) |
 | Embeddings | BAAI/bge-base-en-v1.5 (SentenceTransformers) |
-| Reranker | cross-encoder/ms-marco-MiniLM-L-6-v2 |
-| LLM | Groq — Llama 3.3 70B (generation), Llama 3.1 8B (query rewriting) |
-| Safety classifier | gpt-oss-safeguard-20b via Groq |
-| Web search | Tavily API |
-| Frontend | Vanilla HTML, CSS, JavaScript |
+| Reranking | cross-encoder/ms-marco-MiniLM-L-6-v2 |
+| LLM – Response Generation | OpenAI GPT-OSS-120B via Groq |
+| LLM – Query Rewriting | Llama 3.1 8B Instant via Groq |
+| Safety Classification | OpenAI GPT-OSS-Safeguard-20B via Groq |
+| Web Search | Tavily API |
+| Frontend | HTML, CSS, Vanilla JavaScript |
+| Document Processing | PyPDF, pdfplumber, python-docx, NLTK |
+| Communication | Server-Sent Events (SSE) |
 
 ---
 
-## Setup
+## 🚀 Getting Started
 
-**1. Clone the repo**
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/YOUR_USERNAME/rag-chatbot.git
 cd rag-chatbot
 ```
 
-**2. Create and activate a virtual environment**
+### 2. Create and Activate a Virtual Environment
+
 ```bash
 python -m venv venv
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # Mac/Linux
 ```
 
-**3. Install dependencies**
+**Windows:**
+```bash
+venv\Scripts\activate
+```
+
+**Mac/Linux:**
+```bash
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-**4. Create a `.env` file**
-```
+### 4. Configure Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
 GROQ_API_KEY=your_groq_api_key
 TAVILY_API_KEY=your_tavily_api_key
 ```
 
-**5. Run the server**
+Get your API keys:
+
+- [Groq Console](https://console.groq.com/)
+- [Tavily](https://tavily.com/)
+
+### 5. Run the Application
+
 ```bash
 uvicorn main:app --reload
 ```
 
-**6. Open in browser**
-```
+### 6. Open in Browser
+
+```text
 http://localhost:8000
 ```
 
 ---
 
-## How It Works
+## 🔄 How It Works
 
-### Upload
-PDF/DOCX/TXT/MD → text extraction → semantic chunking (600 chars, 1-sentence overlap) → batch embedding → ChromaDB storage
+### 📂 Document Upload Pipeline
 
-### Query Pipeline
-1. Pronoun resolution — checks if follow-up context is needed
-2. Query rewriting — 3 variants generated (original + 2 rephrases) via Llama 3.1 8B
-3. Vector search — top 10 candidates per variant from ChromaDB, deduplicated
-4. Cross-encoder reranking — top 15 candidates scored, top 5 returned
-5. Web fallback — Tavily fires only if best reranker score ≤ 0
-6. LLM generation — Llama 3.3 70B streams answer from combined context
+Uploaded documents pass through the following stages:
 
-### Guardrail Pipeline
+1. **Text Extraction:** Extracts text from PDF, DOCX, TXT, and Markdown files.
+2. **Semantic Chunking:** Splits extracted text into 600-character chunks with one-sentence overlap.
+3. **Embedding Generation:** Generates normalized dense vector embeddings using BAAI/bge-base-en-v1.5.
+4. **Vector Storage:** Stores embeddings, document chunks, and source metadata in ChromaDB.
+
+### 💬 Query Processing Pipeline
+
+1. **Pronoun Resolution:** Identifies contextual references in follow-up questions using recent conversation history.
+2. **Query Rewriting:** Uses Llama 3.1 8B Instant to generate two alternative search queries.
+3. **Vector Search:** Retrieves up to 10 candidates per query variant from ChromaDB and removes duplicate chunks.
+4. **Cross-Encoder Reranking:** Ranks up to 15 candidates using a cross-encoder and selects the top 5.
+5. **Conditional Web Search:** Uses Tavily when document relevance is insufficient.
+6. **LLM Generation:** Uses GPT-OSS-120B to generate context-grounded answers with token-by-token streaming.
+
+### 🛡️ Multi-Layer Guardrail Pipeline
+
+```text
+                    User Query
+                        |
+                        v
+                Regex-Based Filter
+                        |
+                        v
+                LLM Safety Classifier
+             (GPT-OSS-Safeguard-20B)
+                        |
+              +---------+---------+
+              |                   |
+            Unsafe               Safe
+              |                   |
+              v                   v
+        Policy Response     Retrieval Pipeline
+                                  |
+                                  v
+                           LLM Generation
+                           (GPT-OSS-120B)
+                                  |
+                                  v
+                         Output Classification
+                                  |
+                                  v
+                           Final Response
 ```
-User query
-  → Regex filter (explicit crisis phrases — instant, no API call)
-  → LLM classifier (gpt-oss-safeguard-20b — catches indirect phrasing)
-  → If unsafe: fixed policy response returned, pipeline stops
-  → If safe: retrieval + generation proceeds
-  → Output classifier (generated answer checked post-generation)
-  → Final response streamed to user
-```
+
+The system performs both input-level and output-level safety checks to add multiple layers of protection.
 
 ---
 
-## API Endpoints
+## 🔌 API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/` | Serves the frontend |
-| GET | `/documents` | List uploaded documents |
-| GET | `/documents/chunks` | Chunk count per document |
-| DELETE | `/documents/{filename}` | Delete a document |
-| POST | `/upload` | Upload a file (streaming progress) |
-| POST | `/ask` | Ask a question (SSE streaming) |
-| POST | `/study` | Generate notes, flashcards, or quiz |
+| `GET` | `/` | Serves the frontend |
+| `GET` | `/health` | Checks backend health |
+| `GET` | `/documents` | Lists uploaded documents |
+| `GET` | `/documents/chunks` | Returns chunk counts per document |
+| `DELETE` | `/documents/{filename}` | Deletes a document |
+| `POST` | `/upload` | Uploads and processes documents with streaming progress |
+| `POST` | `/ask` | Processes questions with SSE response streaming |
+| `POST` | `/study` | Generates notes, flashcards, and quizzes |
 
 ---
 
-## Environment Variables
+## 🔑 Environment Variables
 
 | Variable | Description |
 |---|---|
-| `GROQ_API_KEY` | Groq API key |
-| `TAVILY_API_KEY` | Tavily web search API key |
+| `GROQ_API_KEY` | API key for Groq-powered LLM inference |
+| `TAVILY_API_KEY` | API key for conditional web search |
+
+---
+
+## 🎯 Key Highlights
+
+- Implements an end-to-end RAG architecture combining semantic retrieval and neural reranking.
+- Improves retrieval coverage through multi-query search and contextual query resolution.
+- Minimizes unnecessary external searches through relevance-based web fallback.
+- Integrates document question answering with AI-powered study tools.
+- Implements input and output safety classification.
+- Provides retrieval transparency through source relevance visualization and debugging tools.
+- Supports persistent document storage and multi-session chat history.
+
+---
+
+## 👩‍💻 Author
+
+Developed as part of an **AI/ML Internship at Synergech Technologies**.
+
+**DocuMind — Making document understanding smarter, safer, and more interactive.**
