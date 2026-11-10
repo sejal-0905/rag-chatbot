@@ -187,10 +187,4 @@ The system performs both input-level and output-level safety checks to add multi
 - Provides retrieval transparency through source relevance visualization and debugging tools.
 - Supports persistent document storage and multi-session chat history.
 
----
 
-## 👩‍💻 Author
-
-Developed as part of an **AI/ML Internship at Synergech Technologies**.
-
-**DocuMind — Making document understanding smarter, safer, and more interactive.**
