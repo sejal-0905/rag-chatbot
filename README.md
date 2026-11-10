@@ -1,5 +1,17 @@
 # 🧠 DocuMind — Intelligent Document-Grounded RAG Chatbot
 
+<p align="center">
+  <strong>A Full-Stack Retrieval-Augmented Generation System for Intelligent Document Question Answering</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.x-blue?logo=python" />
+  <img src="https://img.shields.io/badge/FastAPI-Backend-009688?logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/ChromaDB-Vector%20Database-purple" />
+  <img src="https://img.shields.io/badge/Groq-LLM%20Inference-orange" />
+  <img src="https://img.shields.io/badge/Tavily-Web%20Search-blue" />
+</p>
+
 An intelligent, full-stack Retrieval-Augmented Generation (RAG) chatbot that answers questions using uploaded documents, with conditional web search fallback and an integrated AI-powered study companion.
 
 Built during an **AI/ML Internship at Synergech Technologies**.
@@ -186,5 +198,13 @@ The system performs both input-level and output-level safety checks to add multi
 - Implements input and output safety classification.
 - Provides retrieval transparency through source relevance visualization and debugging tools.
 - Supports persistent document storage and multi-session chat history.
+
+  ---
+
+<p align="center">
+  <strong>👩‍💻 Developed during an AI/ML Internship at Synergech Technologies</strong>
+  <br />
+  <sub>Retrieval-Augmented Generation • Large Language Models • Semantic Search • AI Safety</sub>
+</p>
 
 
